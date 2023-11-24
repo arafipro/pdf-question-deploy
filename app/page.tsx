@@ -14,37 +14,39 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { readPdf } from "@/lib/readPdf";
 
 const formSchema = z.object({
-  apiKey: z.string().length(51, {
-    message: "OPENAI API KEYを入力してください",
+  // apiKey: z.string().length(51, {
+  //   message: "OPENAI API KEYを入力してください",
+  // }),
+  pdfFile: z.custom<FileList>().refine((file) => file && file.length !== 0, {
+    message: "ファイルが選択されていません",
   }),
-  pdfFile: z
-    .string()
-    .regex(RegExp("^.*\\.pdf$"), "PDFファイルを指定してください"),
-  question: z.string().min(2, {
-    message: "質問を入力してください",
-  }),
+  // question: z.string().min(2, {
+  //   message: "質問を入力してください",
+  // }),
 });
-
+type Schema = z.infer<typeof formSchema>;
 export default function Home() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      apiKey: "",
-      pdfFile: "",
-      question: "",
+      // apiKey: "",
+      // pdfFile: "",
+      // question: "",
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
+	async function onSubmit(values: z.infer<typeof formSchema>) {
+		// 読み込んだPDFファイルを取得する
+		await readPdf(values.pdfFile[0].name);
   }
-
+	
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-        <FormField
+        {/* <FormField
           control={form.control}
           name="apiKey"
           render={({ field }) => (
@@ -60,21 +62,28 @@ export default function Home() {
               <FormMessage />
             </FormItem>
           )}
-        />
+        /> */}
         <FormField
           control={form.control}
           name="pdfFile"
-          render={({ field }) => (
+          render={({ field: { value, onChange, ...fieldProps } }) => (
             <FormItem>
               <FormLabel>PDFファイル</FormLabel>
               <FormControl>
-                <Input type="file" accept=".pdf" {...field} />
+                <Input
+                  type="file"
+                  accept=".pdf"
+                  {...fieldProps}
+                  onChange={(event) => {
+                    onChange(event.target.files && event.target.files);
+                  }}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
-        <FormField
+        {/* <FormField
           control={form.control}
           name="question"
           render={({ field }) => (
@@ -86,7 +95,7 @@ export default function Home() {
               <FormMessage />
             </FormItem>
           )}
-        />
+        /> */}
         <Button type="submit">Submit</Button>
       </form>
     </Form>
