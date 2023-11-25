@@ -14,39 +14,41 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { readPdf } from "@/lib/readPdf";
 
 const formSchema = z.object({
-  // apiKey: z.string().length(51, {
-  //   message: "OPENAI API KEYを入力してください",
-  // }),
-  pdfFile: z.custom<FileList>().refine((file) => file && file.length !== 0, {
-    message: "ファイルが選択されていません",
+  question: z
+    .string({ required_error: "質問を入力してください" })
+    .min(1, { message: "質問を入力してください" }),
+  apiKey: z.string().length(51, {
+    message: "OPENAI API KEYを入力してください",
   }),
-  // question: z.string().min(2, {
-  //   message: "質問を入力してください",
-  // }),
+  pdfFile: z
+    .custom<FileList>()
+    .refine((file) => file && file.length !== 0, {
+      message: "ファイルが選択されていません",
+    }),
 });
+
 type Schema = z.infer<typeof formSchema>;
 export default function Home() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      // apiKey: "",
-      // pdfFile: "",
-      // question: "",
+      question: "",
+			apiKey: "",
     },
   });
 
-	async function onSubmit(values: z.infer<typeof formSchema>) {
-		// 読み込んだPDFファイルを取得する
-		await readPdf(values.pdfFile[0].name);
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    // 読み込んだPDFファイルを取得する
+    // await readPdf(values.pdfFile[0].name);
+    console.log(values);
   }
-	
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-        {/* <FormField
+        <FormField
           control={form.control}
           name="apiKey"
           render={({ field }) => (
@@ -62,7 +64,7 @@ export default function Home() {
               <FormMessage />
             </FormItem>
           )}
-        /> */}
+        />
         <FormField
           control={form.control}
           name="pdfFile"
@@ -74,8 +76,8 @@ export default function Home() {
                   type="file"
                   accept=".pdf"
                   {...fieldProps}
-                  onChange={(event) => {
-                    onChange(event.target.files && event.target.files);
+                  onChange={(e) => {
+                    onChange(e.target.files && e.target.files);
                   }}
                 />
               </FormControl>
@@ -83,7 +85,7 @@ export default function Home() {
             </FormItem>
           )}
         />
-        {/* <FormField
+        <FormField
           control={form.control}
           name="question"
           render={({ field }) => (
@@ -95,8 +97,8 @@ export default function Home() {
               <FormMessage />
             </FormItem>
           )}
-        /> */}
-        <Button type="submit">Submit</Button>
+        />
+        <Button type="submit">送信</Button>
       </form>
     </Form>
   );
