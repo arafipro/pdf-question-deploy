@@ -7,7 +7,6 @@ export async function textSplitter(str: string) {
     chunkOverlap: 24,
   });
 
-  const output = await splitter.createDocuments([str]);
-  console.log(output);
-  console.log(output.length);
+	const output = await splitter.createDocuments([str]);
+	return output
 }

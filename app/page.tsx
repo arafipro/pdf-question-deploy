@@ -1,9 +1,5 @@
 "use client";
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import * as z from "zod";
-
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -14,8 +10,12 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { openAiApi } from "@/lib/openAiApi";
 import { readPdf } from "@/lib/readPdf";
 import { textSplitter } from "@/lib/textSplitter";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import * as z from "zod";
 
 const formSchema = z.object({
   question: z
@@ -41,8 +41,11 @@ export default function Home() {
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     console.log(values);
-		const str = await readPdf(`data/${values.pdfFile[0].name}`);
-		await textSplitter(str)
+    const str = await readPdf(`data/${values.pdfFile[0].name}`);
+    const split_str = await textSplitter(str);
+    // console.log(split_str)
+    const res = await openAiApi(values.apiKey, values.question);
+    console.log(res);
   }
 
   return (
