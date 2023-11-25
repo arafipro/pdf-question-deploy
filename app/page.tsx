@@ -44,7 +44,7 @@ export default function Home() {
     const str = await readPdf(`data/${values.pdfFile[0].name}`);
     const split_str = await textSplitter(str);
     // console.log(split_str)
-    const res = await openAiApi(values.apiKey, values.question);
+    const res = await openAiApi(values.apiKey, values.question, split_str);
     console.log(res);
   }
 
