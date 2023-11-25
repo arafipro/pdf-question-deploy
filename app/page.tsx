@@ -14,6 +14,8 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { readPdf } from "@/lib/readPdf";
+import { textSplitter } from "@/lib/textSplitter";
 
 const formSchema = z.object({
   question: z
@@ -22,11 +24,9 @@ const formSchema = z.object({
   apiKey: z.string().length(51, {
     message: "OPENAI API KEYを入力してください",
   }),
-  pdfFile: z
-    .custom<FileList>()
-    .refine((file) => file && file.length !== 0, {
-      message: "ファイルが選択されていません",
-    }),
+  pdfFile: z.custom<FileList>().refine((file) => file && file.length !== 0, {
+    message: "ファイルが選択されていません",
+  }),
 });
 
 type Schema = z.infer<typeof formSchema>;
@@ -35,14 +35,14 @@ export default function Home() {
     resolver: zodResolver(formSchema),
     defaultValues: {
       question: "",
-			apiKey: "",
+      apiKey: "",
     },
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    // 読み込んだPDFファイルを取得する
-    // await readPdf(values.pdfFile[0].name);
     console.log(values);
+		const str = await readPdf(`data/${values.pdfFile[0].name}`);
+		await textSplitter(str)
   }
 
   return (
