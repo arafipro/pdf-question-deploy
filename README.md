@@ -1,5 +1,7 @@
 # PDFの内容を質問するアプリを作る OPENAI APIとLangChainを使って
 
+## Zenn記事投稿用テストプロジェクト
+
 ## 関連書籍(Zenn)
 
 https://zenn.dev/arafipro/books/pdf-question-yt
