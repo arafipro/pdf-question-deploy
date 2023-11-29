@@ -52,7 +52,7 @@ export default function Home() {
   }
 
   return (
-    <>
+    <main className="mx-auto mt-10 w-3/4">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
           <FormField
@@ -63,6 +63,7 @@ export default function Home() {
                 <FormLabel>OPENAI APIKEY</FormLabel>
                 <FormControl>
                   <Input
+                    className="border-slate-500"
                     placeholder="OPENAI APIKEYを入力してください"
                     type="password"
                     {...field}
@@ -80,6 +81,7 @@ export default function Home() {
                 <FormLabel>PDFファイル</FormLabel>
                 <FormControl>
                   <Input
+                    className="border-slate-500"
                     type="file"
                     accept=".pdf"
                     {...fieldProps}
@@ -99,16 +101,22 @@ export default function Home() {
               <FormItem>
                 <FormLabel>質問</FormLabel>
                 <FormControl>
-                  <Input placeholder="質問を入力してください" {...field} />
+                  <Input
+                    className="border-slate-500"
+                    placeholder="質問を入力してください"
+                    {...field}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
-          <Button type="submit">送信</Button>
+          <Button className="w-full" type="submit">
+            送信
+          </Button>
         </form>
       </Form>
       <p>{text}</p>
-    </>
+    </main>
   );
 }
